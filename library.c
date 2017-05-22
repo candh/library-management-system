@@ -85,7 +85,6 @@ int addBook(){
     FILE *fp;
     if( (fp = fopen(DB_NAME, "rb+")) == NULL ){
         puts("Database couldn't be opened");
-        return 0;
     }
 	// ask for information about the book
 	struct Book book = {"", "", "", 0, 0, 0}; // for holding data
@@ -99,7 +98,6 @@ int addBook(){
 
     if(book.book_id != 0){
         puts("The book with this ID already exists");
-        return 0;
 	}
 	else {
         fflush(stdin); // just to be safe
@@ -139,7 +137,6 @@ int deleteBook(){
     fp = fopen(DB_NAME, "rb+");
     if( fp == NULL ){
         puts("Database couldn't be opened");
-        return 0;
     }
 	// ask for information about the book
 	struct Book book = {"", "", "", 0, 0, 0}; //for holding data
@@ -159,7 +156,6 @@ int deleteBook(){
 	}
 	else {
         puts("The book with this ID already doesn't exists");
-        return 0;
 	}
 	fclose(fp);
 	redirect();
@@ -173,7 +169,6 @@ int searchBook(const int mode, const char query[]){
     int result, found = 0;
     if((fp = fopen(DB_NAME, "rb")) == NULL){
         puts("Something wrong with the database");
-        return 0;
     }
     struct Book book = {"", "", "", 0, 0, 0}; //for holding data
     puts("");
@@ -230,7 +225,6 @@ int updateBook(){
     FILE *fp;
     if( (fp = fopen(DB_NAME, "rb+")) == NULL ){
         puts("Database couldn't be opened");
-        return 0;
     }
 	// ask for information about the book
 	struct Book book = {"", "", "", 0, 0, 0}; // for holding data
@@ -270,7 +264,6 @@ int updateBook(){
 	}
 	else {
         puts("The book with this ID already doesn't exists");
-        return 0;
 	}
     fclose(fp);
 	redirect();
@@ -283,7 +276,6 @@ int displayAllBooks(){
     int result;
     if((fp = fopen(DB_NAME, "rb")) == NULL){
         puts("Something wrong with the database");
-        return 0;
     }
     struct Book book;
     puts("");
