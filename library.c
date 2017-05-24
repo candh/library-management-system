@@ -311,12 +311,10 @@ void issueBook(){
 	fread(&book, sizeof(struct Book), 1, fp); // read that
 	if(book.book_id != 0){
         book.is_Reserved = 1;
-        time_t rawtime;
-        struct tm * timeinfo;
-        time (&rawtime);
-        timeinfo = localtime (&rawtime);
+        time_t t;
+        time(&t);
         // storing the current time
-        strcpy(book.reserved_Time, asctime(timeinfo));
+        strcpy(book.reserved_Time, ctime(&t));
 
         fseek(fp, (book.book_id - 1) * sizeof(struct Book), SEEK_SET); // go to that point in file
         fwrite(&book, sizeof(struct Book), 1, fp);
