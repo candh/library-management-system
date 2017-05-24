@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <conio.h>
 #include <string.h>
+#include <time.h>
 #define DB_NAME "library.txt"
 
 // Structure Book Definiton
@@ -9,12 +10,13 @@ struct Book {
 	char book_ISBN[100];
 	char book_title[100];
 	char book_author[100];
+	char reserved_Time[100];
 	int book_edition;
 	int book_id;
 	int is_Reserved;
 };
 
-// clear screen function 
+// clear screen function
 void clrscr(){
     system("@cls||clear");
 }
@@ -278,13 +280,13 @@ void displayAllBooks(){
     }
     struct Book book;
     puts("");
-    printf("%-10s %-16s %-26s %-26s %-16s %-16s\n", "Book ID", "Book ISBN", "Book Title", "Book Author", "Book Edition", "Is Reserved?");
+    printf("%-10s %-16s %-26s %-26s %-16s %-16s %-16s\n", "Book ID", "Book ISBN", "Book Title", "Book Author", "Book Edition", "Is Reserved?", "Reserved Time");
     puts(""); // newline
     while(!feof(fp)){
         result = fread(&book, sizeof(struct Book), 1, fp);
 
         if(result != 0 && book.book_id != 0){
-            printf("%-10d %-16s %-26s %-26s %-16d %-16d\n", book.book_id, book.book_ISBN, book.book_title, book.book_author, book.book_edition, book.is_Reserved);
+            printf("%-10d %-16s %-26s %-26s %-16d %-16d %-16s\n", book.book_id, book.book_ISBN, book.book_title, book.book_author, book.book_edition, book.is_Reserved, book.is_Reserved == 1 ? book.reserved_Time : "");
         }
 
     }
@@ -309,6 +311,12 @@ void issueBook(){
 	fread(&book, sizeof(struct Book), 1, fp); // read that
 	if(book.book_id != 0){
         book.is_Reserved = 1;
+        time_t rawtime;
+        struct tm * timeinfo;
+        time (&rawtime);
+        timeinfo = localtime (&rawtime);
+        // storing the current time
+        strcpy(book.reserved_Time, asctime(timeinfo));
 
         fseek(fp, (book.book_id - 1) * sizeof(struct Book), SEEK_SET); // go to that point in file
         fwrite(&book, sizeof(struct Book), 1, fp);
