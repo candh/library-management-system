@@ -3,6 +3,8 @@
 #include <conio.h>
 #include <string.h>
 #define DB_NAME "library.txt"
+
+// Structure Book Definiton
 struct Book {
 	char book_ISBN[100];
 	char book_title[100];
@@ -11,12 +13,12 @@ struct Book {
 	int book_id;
 	int is_Reserved;
 };
-//
-// return types of all these function could be void
-//
+
+// clear screen function 
 void clrscr(){
     system("@cls||clear");
 }
+
 
 void searchMenu(){
     char isbn[100],
@@ -79,7 +81,7 @@ void redirect(){
 
 
 
-int addBook(){
+void addBook(){
     clrscr();
     int bookId;
     FILE *fp;
@@ -127,10 +129,9 @@ int addBook(){
     // close the file
     fclose(fp);
     redirect();
-	return 0;
 }
 
-int deleteBook(){
+void deleteBook(){
     clrscr();
     int bookId;
     FILE *fp;
@@ -159,10 +160,9 @@ int deleteBook(){
 	}
 	fclose(fp);
 	redirect();
-    return 0;
 }
 
-int searchBook(const int mode, const char query[]){
+void searchBook(const int mode, const char query[]){
     // clear the screen
     clrscr();
     FILE *fp;
@@ -219,7 +219,7 @@ int searchBook(const int mode, const char query[]){
     redirect();
 }
 
-int updateBook(){
+void updateBook(){
     clrscr();
     int bookId;
     FILE *fp;
@@ -267,10 +267,9 @@ int updateBook(){
 	}
     fclose(fp);
 	redirect();
-    return 0;
 }
 
-int displayAllBooks(){
+void displayAllBooks(){
     clrscr();
     FILE *fp;
     int result;
@@ -291,11 +290,37 @@ int displayAllBooks(){
     }
     fclose(fp);
     redirect();
-    return 0;
 }
 
-int issueBook(){
+void issueBook(){
+    clrscr();
+    int bookId;
+    FILE *fp;
+    if( (fp = fopen(DB_NAME, "rb+")) == NULL ){
+        puts("Database couldn't be opened");
+    }
+	// ask for information about the book
+	struct Book book = {"", "", "", 0, 0, 0}; // for holding data
+    printf("Enter Book ID which is to be issued?: ");
+    scanf("%d", &bookId);
 
+    // check to see if the record already exists
+    fseek(fp, (bookId - 1) * sizeof(struct Book), SEEK_SET); // go to that point in file
+	fread(&book, sizeof(struct Book), 1, fp); // read that
+	if(book.book_id != 0){
+        book.is_Reserved = 1;
+
+        fseek(fp, (book.book_id - 1) * sizeof(struct Book), SEEK_SET); // go to that point in file
+        fwrite(&book, sizeof(struct Book), 1, fp);
+
+        puts("Book Issued Successfully");
+	}
+	else {
+        puts("No book exists with this ID");
+	}
+
+	fclose(fp);
+	redirect();
 }
 
 int menu(){
@@ -347,6 +372,8 @@ int menu(){
 			exit(0);
 		break;
 	}
+
+    return choice;
 }
 
 int main(){
