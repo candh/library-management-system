@@ -1,6 +1,5 @@
 # library-management-system
 some stupid library management system made in C because college is making me do it 
-Everything works except book reservation.. Will do that tommorow..
 
 ## How do I run It? 
 - Download library.c
